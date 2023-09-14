@@ -1,12 +1,12 @@
-class IMC{ 
+class IMC {
   double height;
   double weight;
   DateTime date = DateTime.now();
 
   IMC({required this.height, required this.weight, required this.date});
 
-  double calcIMC(){ 
-    double imc = weight / (height * height); 
+  double calcIMC() {
+    double imc = weight / (height * height);
     return imc;
   }
 
@@ -26,5 +26,9 @@ class IMC{
         return 'Obesidade grau 3 (Mórbida)';
     }
     return 'Não foi possível calcular!';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'height': height, 'weight': weight, 'date': date.toIso8601String()};
   }
 }

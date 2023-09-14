@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:imc_santander/models/imc.dart';
 import 'package:imc_santander/repository/imc_repository.dart';
 import 'package:imc_santander/widgets/imc_form.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var documentStorage = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(documentStorage.path);
   runApp(const MyApp());
 }
 
@@ -35,6 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Box storage;
   IMCRepository imcRepository = IMCRepository();
   List<IMC> _imcList = const <IMC>[];
 
@@ -51,10 +57,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
     fetchIMCDatas();
   }
 
   void fetchIMCDatas() async {
+    if (Hive.isBoxOpen('imcValues')) {
+      storage = Hive.box('imcValues');
+    } else {
+      storage = await Hive.openBox('imcValues');
+    }
     _imcList = await imcRepository.fetchDatas();
     setState(() {});
   }

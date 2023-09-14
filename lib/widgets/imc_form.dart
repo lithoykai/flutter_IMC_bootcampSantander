@@ -29,12 +29,15 @@ class _IMCFormState extends State<IMCForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
+    return SingleChildScrollView(
       child: Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: 10 + MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             children: [
               TextField(
