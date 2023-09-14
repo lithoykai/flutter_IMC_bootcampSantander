@@ -42,7 +42,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late Box storage;
   IMCRepository imcRepository = IMCRepository();
-  List<IMC> _imcList = const <IMC>[];
+  List _imcList = [];
 
   void _openModal() {
     showModalBottomSheet(

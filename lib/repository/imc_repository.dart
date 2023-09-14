@@ -4,7 +4,7 @@ import 'package:imc_santander/models/imc.dart';
 class IMCRepository {
   late Box? storage;
   IMCRepository({this.storage});
-  final List<IMC> _items = [];
+  final List _items = [];
 
   List<IMC> get items => [..._items];
 
@@ -16,16 +16,24 @@ class IMCRepository {
     _items.add(imc);
   }
 
-  Future<List<IMC>> fetchDatas() async {
+  Future<List> fetchDatas() async {
     await Future.delayed(const Duration(milliseconds: 200));
     if (Hive.isBoxOpen('imcValues')) {
       storage = Hive.box('imcValues');
     } else {
       storage = await Hive.openBox('imcValues');
     }
-    var items = storage!.get('imcValues');
-    print(storage!.length);
-    print(items);
-    return _items;
+    final data = storage!.keys.map((key) {
+      final item = storage!.get(key);
+
+      return {
+        "key": key,
+        "height": item["height"],
+        "weight": item['weight'],
+        'date': DateTime.parse(item['date'])
+      };
+    }).toList();
+
+    return data.reversed.toList();
   }
 }
