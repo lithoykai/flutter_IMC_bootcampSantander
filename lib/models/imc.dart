@@ -31,4 +31,12 @@ class IMC {
   Map<String, dynamic> toJson() {
     return {'height': height, 'weight': weight, 'date': date.toIso8601String()};
   }
+
+  IMC fromJson(Map<String, dynamic> json) {
+    return IMC(
+      height: json['height'],
+      weight: json['weight'],
+      date: DateTime.tryParse(json['date']) ?? DateTime.now(),
+    );
+  }
 }
