@@ -42,11 +42,13 @@ class _IMCFormState extends State<IMCForm> {
             children: [
               TextField(
                 controller: _heightController,
+                keyboardType: const TextInputType.numberWithOptions(),
                 decoration:
                     const InputDecoration(label: Text('Sua altura atual (m)')),
               ),
               TextField(
                 controller: _weightController,
+                keyboardType: const TextInputType.numberWithOptions(),
                 decoration:
                     const InputDecoration(label: Text('Seu peso atual(kg)')),
               ),

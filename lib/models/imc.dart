@@ -1,9 +1,14 @@
 class IMC {
+  dynamic key;
   double height;
   double weight;
   DateTime date = DateTime.now();
 
-  IMC({required this.height, required this.weight, required this.date});
+  IMC(
+      {required this.height,
+      required this.weight,
+      required this.date,
+      this.key});
 
   double calcIMC() {
     double imc = weight / (height * height);
@@ -29,11 +34,16 @@ class IMC {
   }
 
   Map<String, dynamic> toJson() {
-    return {'height': height, 'weight': weight, 'date': date.toIso8601String()};
+    return {
+      'height': height,
+      'weight': weight,
+      'date': date.toIso8601String(),
+    };
   }
 
-  IMC fromJson(Map<String, dynamic> json) {
+  factory IMC.fromJson(Map<dynamic, dynamic> json) {
     return IMC(
+      key: json['key'] ?? '',
       height: json['height'],
       weight: json['weight'],
       date: DateTime.tryParse(json['date']) ?? DateTime.now(),
