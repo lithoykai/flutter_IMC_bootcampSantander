@@ -44,14 +44,14 @@ class _MyHomePageState extends State<MyHomePage> {
   IMCRepository imcRepository = IMCRepository();
   List _imcList = [];
 
-  void _openModal() {
-    showModalBottomSheet(
+  void _openModal() async {
+    await showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (_) {
         return IMCForm(_addIMC);
       },
-    );
+    ).then((value) => fetchIMCDatas());
   }
 
   @override
@@ -94,40 +94,55 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView.builder(
           itemBuilder: (ctx, i) {
             final imc = _imcList[i];
-            return Card(
-              elevation: 2,
-              child: ListTile(
-                leading: Text(
-                  DateFormat('MM/y').format(imc.date),
-                  style: const TextStyle(fontSize: 15),
-                ),
-                title: Text(
-                  imc.imcValue,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                trailing: Column(
-                  children: [
-                    const Text('IMC:'),
-                    Text(
-                      imc.calcIMC().toStringAsFixed(1),
-                      style: const TextStyle(fontSize: 18),
+            if (_imcList.isEmpty) {
+              return const Center(
+                child: Text('Não há nenhum valor guardado!'),
+              );
+            }
+            return Dismissible(
+                key: UniqueKey(),
+                onDismissed: (direction) async {
+                  await imcRepository
+                      .deleteIMC(imc.key ?? '')
+                      .then((value) => fetchIMCDatas());
+                  setState(() {});
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('IMC removido!')));
+                },
+                child: Card(
+                  elevation: 2,
+                  child: ListTile(
+                    leading: Text(
+                      DateFormat('MM/y').format(imc.date),
+                      style: const TextStyle(fontSize: 15),
                     ),
-                  ],
-                ),
-                subtitle: Column(
-                  children: [
-                    Row(
+                    title: Text(
+                      imc.imcValue,
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                    trailing: Column(
                       children: [
+                        const Text('IMC:'),
                         Text(
-                          'Sua altura: ${imc.height.toStringAsFixed(2)} | Seu peso: ${imc.height.toStringAsFixed(2)}',
-                          style: const TextStyle(fontSize: 12),
+                          imc.calcIMC().toStringAsFixed(1),
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            );
+                    subtitle: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Sua altura: ${imc.height.toStringAsFixed(2)} | Seu peso: ${imc.weight.toStringAsFixed(2)}',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
           },
           itemCount: _imcList.length,
         ),
